@@ -1,26 +1,45 @@
+
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #080808;
+  --card: #171717;
+  --gold: #d4af37;
+  --gold-light: #f5e6b3;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  margin: 0;
+  background-color: var(--background);
+  color: white;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Gold text */
+.gold-text {
+  color: var(--gold);
+}
+
+/* Gold buttons */
+.gold-button {
+  background-color: var(--gold);
+  color: black;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.gold-button:hover {
+  background-color: var(--gold-light);
+}
+
+/* Game card styling */
+.game-card {
+  background-color: var(--card);
+  border: 1px solid #3b321b;
+  transition: 0.2s;
+}
+
+.game-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-5px);
 }
