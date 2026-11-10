@@ -1,3 +1,4 @@
+
 import type { Game } from "@/app/types/game";
 
 export const games: Game[] = [
@@ -15,7 +16,7 @@ export const games: Game[] = [
     genre: "RPG",
     platform: "PC",
     releaseYear: 2022,
-    image: "/games/eldenring.jpg",
+    image: "/games/elden-ring.jpg",
   },
   {
     id: 3,
@@ -23,7 +24,7 @@ export const games: Game[] = [
     genre: "FPS",
     platform: "Xbox",
     releaseYear: 2021,
-    image: "/games/halo.jpg",
+    image: "/games/halo-infinite.jpg",
   },
   {
     id: 4,
@@ -31,7 +32,7 @@ export const games: Game[] = [
     genre: "Simulation",
     platform: "PC",
     releaseYear: 2016,
-    image: "/games/stardew.jpg",
+    image: "/games/stardew-valley.jpg",
   },
   {
     id: 5,
@@ -47,6 +48,6 @@ export const games: Game[] = [
     genre: "RPG",
     platform: "PC",
     releaseYear: 2020,
-    image: "/games/cyberpunk.jpg",
+    image: "/games/cyberpunk-2077.jpg",
   },
 ];
