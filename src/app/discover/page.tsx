@@ -6,13 +6,18 @@ import { useEffect, useState } from "react";
 type APIGame = {
   id: number;
   name: string;
-  background_image: string | null;
-  rating: number;
-  released: string | null;
+  image: string | null;
+  genre: string;
+  year: number | null;
+  rating: {
+    mean: number;
+    count: number;
+  } | null;
 };
 
 export default function DiscoverPage() {
   const [games, setGames] = useState<APIGame[]>([]);
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -25,11 +30,15 @@ export default function DiscoverPage() {
           throw new Error("Failed to load games");
         }
 
-        const data: APIGame[] = await response.json();
+        const data = await response.json();
+
+        if (!Array.isArray(data)) {
+          throw new Error("Invalid API response format");
+        }
 
         setGames(data);
       } catch (error) {
-        console.error(error);
+        console.error("Game loading error:", error);
         setError("Could not load games.");
       } finally {
         setLoading(false);
@@ -39,57 +48,91 @@ export default function DiscoverPage() {
     loadGames();
   }, []);
 
+  const filteredGames = games.filter((game) =>
+    game.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <main className="max-w-7xl mx-auto p-8">
-      <h1 className="text-4xl font-bold text-purple-400 mb-4">
-        Discover Games
-      </h1>
+    <main className="min-h-screen bg-black text-white p-8">
+      <div className="max-w-7xl mx-auto">
 
-      <p className="text-gray-300 mb-8">
-        Explore games retrieved from the RAWG API.
-      </p>
+        <h1 className="text-4xl font-bold text-[#D4AF37] mb-4">
+          Discover Games
+        </h1>
 
-      {loading && (
-        <p className="text-xl">Loading games...</p>
-      )}
+        <p className="text-gray-300 mb-8">
+          Explore games retrieved from the GameBrain API.
+        </p>
 
-      {error && (
-        <p className="text-red-400">{error}</p>
-      )}
+        <input
+          type="text"
+          placeholder="Search loaded games..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full bg-[#171717] text-white p-3 rounded-lg border border-[#D4AF37] mb-8"
+        />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {games.map((game) => (
-          <div
-            key={game.id}
-            className="bg-gray-800 rounded-xl overflow-hidden shadow-lg"
-          >
-            {game.background_image ? (
-              <img
-                src={game.background_image}
-                alt={game.name}
-                className="w-full h-56 object-cover"
-              />
-            ) : (
-              <div className="h-56 bg-gray-700 flex items-center justify-center">
-                No Image
-              </div>
-            )}
+        {loading && (
+          <p className="text-[#D4AF37]">
+            Loading games...
+          </p>
+        )}
 
-            <div className="p-5">
-              <h2 className="text-xl font-bold mb-3">
-                {game.name}
-              </h2>
+        {error && (
+          <p className="text-red-400">{error}</p>
+        )}
 
-              <p className="text-gray-300">
-                Rating: {game.rating}/5
-              </p>
+        {!loading && !error && (
+          <>
+            <p className="text-gray-400 mb-6">
+              Showing {filteredGames.length} games
+            </p>
 
-              <p className="text-gray-300">
-                Released: {game.released || "Unknown"}
-              </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredGames.map((game) => (
+                <div
+                  key={game.id}
+                  className="bg-[#171717] border border-[#5C4A20] rounded-xl overflow-hidden shadow-lg hover:border-[#D4AF37] transition-colors"
+                >
+                  {game.image && (
+                    <img
+                      src={game.image}
+                      alt={game.name}
+                      className="w-full h-56 object-cover"
+                    />
+                  )}
+
+                  <div className="p-5">
+                    <h2 className="text-xl font-bold text-[#D4AF37] mb-3">
+                      {game.name}
+                    </h2>
+
+                    <p className="text-gray-300 mb-2">
+                      Genre: {game.genre || "Unknown"}
+                    </p>
+
+                    <p className="text-gray-300 mb-2">
+                      Released: {game.year ?? "Unknown"}
+                    </p>
+
+                    <p className="text-gray-300">
+                      Rating:{" "}
+                      {game.rating?.mean != null
+                        ? (game.rating.mean * 10).toFixed(1) + "/10"
+                        : "Not rated"}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
+
+            {filteredGames.length === 0 && (
+              <p className="text-gray-400 text-center mt-10">
+                No games found.
+              </p>
+            )}
+          </>
+        )}
       </div>
     </main>
   );
